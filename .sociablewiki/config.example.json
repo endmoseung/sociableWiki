@@ -1,0 +1,13 @@
+{
+  "author": "Your Name",
+  "githubHandle": "your-handle",
+  "repoName": "sociableWiki",
+  "mcpServerName": "sociable-wiki",
+  "areas": ["ai-native", "dev", "principles"],
+  "languages": ["en", "ko"],
+  "secretPatterns": [
+    "// list your employer / internal product / repo / ticket-prefix / coworker names here",
+    "// e.g. \"acme-corp\", \"internal-tool-x\", \"PROJ-\" — the set-time gate greps these and blocks any doc that leaks one",
+    "// leave the array with only comments (or empty) if your wiki is fully personal"
+  ]
+}

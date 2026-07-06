@@ -4,12 +4,16 @@
   "description": "A public, agent-searchable personal knowledge wiki — browse it as markdown or plug it into your AI agent as an MCP server.",
   "type": "module",
   "bin": {
-    "sociablewiki-mcp": "mcp/dist/index.js"
+    "sociablewiki-mcp": "mcp/dist/index.js",
+    "sociablewiki": "cli/install.mjs"
   },
   "files": [
     "mcp/dist",
+    "cli",
+    "dist",
     "knowledge",
     "ko",
+    ".sociablewiki",
     "README.md"
   ],
   "scripts": {

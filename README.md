@@ -75,6 +75,42 @@ npm install && npm run build
 node mcp/dist/index.js   # speaks MCP over stdio
 ```
 
+## Make it your own
+
+This repo isn't just my notes — it's a **template you can run as your own
+agent-searchable wiki**. My 22 docs are the worked example; the structure, the skills,
+and the MCP server are yours to take.
+
+```bash
+# 1. clone (or use this repo as a GitHub template)
+git clone https://github.com/endmoseung/sociableWiki my-brain && cd my-brain
+
+# 2. install the get / set / new skills into whatever agent you use
+npx sociablewiki install     # detects .claude / .cursor in this project
+                             # add --global to install into ~/.claude
+
+# 3. make it yours (sets author, repo, MCP name; run once)
+npx sociablewiki init
+```
+
+Then your agent has three verbs (they work the same in Claude Code, Cursor, and any
+agent that reads `dist/universal/AGENTS.md`):
+
+| Verb | Skill | What you say |
+|---|---|---|
+| **get** | `knowledge-get` | *"search my wiki for how I decide fan-out width"* |
+| **set** | `knowledge-set` | *"add this pattern to my wiki"* |
+| **new** | `knowledge-new` | *"make this wiki mine"* (clears my example content) |
+
+`new` swaps my content out for an empty wiki wired to your name and repo. From there you
+`set` your own concepts, point the repo at your own remote, and connect your own MCP
+server — the same way people connect mine. Keep adding docs and it grows into your public
+knowledge surface.
+
+The skills carry a **portable quality gate**: they check required frontmatter, dead
+`relates` links, duplicate ids, and (if you list your employer/internal names in
+`.sociablewiki/config.json`) sweep for those so private context never lands in a public wiki.
+
 ---
 
 ## 한국어

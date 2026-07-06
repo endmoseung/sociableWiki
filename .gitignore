@@ -1,0 +1,8 @@
+node_modules/
+mcp/dist/
+*.tsbuildinfo
+.DS_Store
+
+# Curation working files — private, not for the public repo
+_curation/
+.curation/

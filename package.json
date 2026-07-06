@@ -1,0 +1,46 @@
+{
+  "name": "sociablewiki",
+  "version": "0.1.0",
+  "description": "A public, agent-searchable personal knowledge wiki — browse it as markdown or plug it into your AI agent as an MCP server.",
+  "type": "module",
+  "bin": {
+    "sociablewiki-mcp": "mcp/dist/index.js"
+  },
+  "files": [
+    "mcp/dist",
+    "knowledge",
+    "ko",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p mcp",
+    "prepare": "npm run build",
+    "start": "node mcp/dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/endmoseung/sociableWiki.git"
+  },
+  "keywords": [
+    "mcp",
+    "knowledge-base",
+    "wiki",
+    "ai-native",
+    "model-context-protocol"
+  ],
+  "author": "Seungmo Kim (https://github.com/endmoseung)",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "gray-matter": "^4.0.3",
+    "minisearch": "^7.1.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}

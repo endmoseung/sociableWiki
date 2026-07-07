@@ -110,12 +110,19 @@ async function runInit(target, prompter) {
   log("\n── init: make this wiki yours ──");
   const cfgExample = path.join(target, ".sociablewiki", "config.example.json");
   const cfgPath = path.join(target, ".sociablewiki", "config.json");
+  // Prefer an existing config.json (re-running init keeps your prior answers as
+  // defaults); fall back to the shipped example only on a first run.
   let base = {};
-  if (fs.existsSync(cfgExample)) {
-    try {
-      base = JSON.parse(fs.readFileSync(cfgExample, "utf8"));
-    } catch {
-      base = {};
+  let fromExistingConfig = false;
+  for (const p of [cfgPath, cfgExample]) {
+    if (fs.existsSync(p)) {
+      try {
+        base = JSON.parse(fs.readFileSync(p, "utf8"));
+        fromExistingConfig = p === cfgPath;
+        break;
+      } catch {
+        // malformed file — try the next source
+      }
     }
   }
   const author = await prompter.ask("Author name", base.author || "");
@@ -129,7 +136,10 @@ async function runInit(target, prompter) {
     mcpServerName: mcpName,
     areas: base.areas || ["ai-native", "dev", "principles"],
     languages: base.languages || ["en"],
-    secretPatterns: [],
+    // Preserve secretPatterns only when re-running against a real config.json —
+    // the shipped example's array holds comment strings, not real patterns.
+    secretPatterns:
+      fromExistingConfig && Array.isArray(base.secretPatterns) ? base.secretPatterns : [],
   };
   fs.mkdirSync(path.dirname(cfgPath), { recursive: true });
   fs.writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
@@ -161,8 +171,15 @@ async function main() {
       prompter.close();
       return;
     }
-    log("Detected harnesses: " + detected.map((p) => p.label).join(", "));
-    const proceed = await prompter.ask("Install sociableWiki skills into these? [y/N]", "y");
+    log(
+      "Detected harnesses: " +
+        detected.map((p) => `${p.label}${p._global ? " → ~/.claude (global)" : ""}`).join(", ")
+    );
+    const anyGlobal = detected.some((p) => p._global);
+    const installQuestion = anyGlobal
+      ? "Install sociableWiki skills, including into your home ~/.claude? [Y/n]"
+      : "Install sociableWiki skills into this project? [Y/n]";
+    const proceed = await prompter.ask(installQuestion, "y");
     if (proceed.toLowerCase() !== "y") {
       log("Aborted.");
       prompter.close();

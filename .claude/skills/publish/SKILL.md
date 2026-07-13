@@ -78,11 +78,22 @@ same path under `ko/`. External-derived docs end with a `## Sources` section.
    - `grep -inE '<banlist>' knowledge/<id>.md ko/<id>.md` → must be clean.
    - `python3 <korean-quality-gate>/check_korean.py ko/<id>.md` → must exit 0.
 5. **Index** — add the new concepts to `knowledge/index.md`.
-6. **PR** — branch, commit, open a PR to `main`. **The human merges.** Never merge
+6. **Final evidence** — after the last edit, capture the exact revision/worktree
+   fingerprint and rerun the checks below. A receipt from before the last edit is stale
+   for the publish candidate.
+7. **PR** — branch, commit, open a PR to `main`. **The human merges.** Never merge
    automatically, even on a personal repo.
 
 ## Verify before "done"
 
-- `npm run build` passes.
-- The new docs appear in `list_topics` and are findable via `search_knowledge`
-  (test one EN query and one KO query through the MCP server).
+- Record `git rev-parse HEAD`, `git status --short`, and `git diff --stat` with the
+  verification receipt. If the worktree is dirty, name the exact changed files in the
+  receipt; the commit hash alone does not identify the artifact.
+- Treat any edit after verification as evidence-invalidating for the touched artifact.
+  Rerun the relevant checks after that edit before saying "done".
+- `npm run build` passes after the final edit.
+- Through the MCP server, verify `list_topics`, one EN `read_doc`/search path, and one KO
+  `read_doc`/search path for the new or changed concepts.
+- If publishing changes installer behavior, run behavioral QA in a temporary target project:
+  install once, verify the managed import/loaded file, reinstall for idempotency, and test
+  a conflicting managed file for prompt/failure semantics.

@@ -64,6 +64,25 @@ relates: []
 5. **그 절차가 버려질 출력(검색, 로그, 파일 덤프)으로 main context를
    범람시키나?** → Subagent, 또는 `context: fork`를 단 Skill.
 
+## 실행 surface는 별도의 라우팅 축이다
+
+primitive를 고른 뒤에는 **실행 surface**를 따로 라우팅해야 합니다. primitive는 "이 행동이 어디에
+살아야 하나?"에 답하고, surface는 "이번에는 어디서 돌려야 하나?"에 답합니다.
+
+| 행동 모양 | 기본 primitive | 낮은 난이도 surface | 높은 난이도 surface |
+|-----------|----------------|---------------------|---------------------|
+| 정적 정책이나 프로젝트 사실 | `CLAUDE.md` | main context | main context, 단 고정세가 커지기 전에 과감히 줄임 |
+| 사람이 반복 호출하는 workflow | Skill | main context | 로그·검색이 main thread를 더럽히면 `context: fork`를 단 Skill |
+| 무거운 조사나 review | Subagent | 싼 모델의 background subagent | 명시적 파일·스키마·예산을 준 격리 subagent/worktree |
+| 보장돼야 하는 lifecycle 반응 | Hook | shell hook | hook + 결정론적 receipt. 모델 기억에 기대지 않음 |
+| 외부 시스템 접근 | MCP | 일회성이면 기존 CLI를 Skill로 감쌈 | 타입이 잡힌 반복 live tool 접근이 서버 값을 할 때만 MCP |
+
+난이도를 새 primitive로 만들지 마세요. "쉬운 reviewer"와 "어려운 reviewer"는 같은 행동이고,
+모델/effort 라우팅만 다릅니다. Claude custom agent에서는 그 역할이 실제로 성능 상한을 필요로 할
+때 `model`이 agent 정의에 들어갈 수 있습니다. 하지만 `effort`는 CLI, background runner, 또는
+attempt별 호출 설정에 속합니다. "effort custom-agent frontmatter"를 설계 패턴으로 만들지 마세요.
+런타임 예산 결정을 영구 surface로 바꿔버립니다.
+
 ## 핵심 skill frontmatter (같은 파일이 행동을 바꾸는 법)
 
 | 필드 | 효과 |

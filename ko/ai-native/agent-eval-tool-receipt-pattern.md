@@ -45,6 +45,28 @@ relates: []
 
 이렇게 하면 조작된 결과가 뒤쪽 추론으로 전파되기 전에 발생 지점에서 잡힙니다. 싸고, 결정론적이고, 아무리 출력 품질을 채점해도 못 찾는 구멍을 막아줍니다.
 
+## attempt와 revision에 묶인 증거
+
+receipt는 영원한 증거가 아닙니다. 하나의 attempt에서, 정확히 하나의 산출물에 대해, 하나의 행동이
+일어났다는 증거입니다. 모든 receipt는 다음에 묶여야 합니다.
+
+- `attempt_id` 또는 retry 번호 — 뒤의 재시도는 첫 attempt의 증거를 물려받지 않습니다.
+- tool 또는 command 이름, 인자, exit status, 시작/종료 시각, 짧은 출력 digest.
+- repository revision과 worktree fingerprint — 최소한 `git rev-parse HEAD`와 그 실행에 쓴 dirty
+  status 요약 또는 tree hash.
+- 산출물 identity — tool이 build output을 건드렸다면 파일 경로와 hash 또는 package/version.
+
+운영 규칙은 이겁니다. **마지막 수정은 그 산출물에 대한 이전 증거를 무효화합니다.** build 뒤에
+문서를 고쳤다면 build receipt는 여전히 코드가 컴파일됐다는 증거일 수 있지만, publish 후보 전체의
+증거는 아닙니다. MCP 문서를 smoke test 뒤에 고쳤다면 MCP smoke를 다시 돌려야 합니다. receipt는
+attempt별 append-only로 남기세요. 실패한 attempt를 통과한 attempt로 덮어쓰지 마세요.
+
+tool receipt는 사용자 행동을 증명하지도 않습니다. 사람이든 에이전트든 실제로 쓸 surface가 있다면
+**behavioral QA receipt**를 따로 남기세요. scenario, input, 실제로 조작한 live surface(CLI, MCP
+tool, browser, editor), 관측한 output, revision fingerprint가 필요합니다. "테스트가 통과했다"와
+"설치 흐름을 실제로 돌렸고 import된 파일이 로드됐다"는 서로 다른 주장이고, 따라서 서로 다른
+receipt가 필요합니다.
+
 ## 4단계 eval 피라미드
 
 비용을 감당하면서도 정작 중요한 실패는 놓치지 않게 해주는 계층 구조입니다.

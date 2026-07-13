@@ -19,7 +19,9 @@
   "scripts": {
     "build": "tsc -p mcp",
     "prepare": "npm run build",
-    "start": "node mcp/dist/index.js"
+    "start": "node mcp/dist/index.js",
+    "test": "node --test",
+    "test:install": "node --test test/install.test.mjs"
   },
   "repository": {
     "type": "git",

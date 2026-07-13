@@ -1,8 +1,8 @@
 ---
 type: reference
-title: "Authoring a Claude Code plugin: the checklist local testing misses (paths · versions · triggers)"
-description: A plugin that works in a local .claude/ dir can silently break once it ships and gets installed; three axes — paths, versions, triggers — catch almost all of it.
-tags: [claude-code, plugins, packaging, distribution, checklist]
+title: "Authoring a Claude Code plugin: the checklist local testing misses (paths · versions · triggers · publish receipts)"
+description: A plugin that works in a local .claude/ dir can silently break once it ships and gets installed; paths, versions, triggers, and revision-bound publish receipts catch almost all of it.
+tags: [claude-code, plugins, packaging, distribution, checklist, verification]
 date: 2026-06-24
 source: original
 relates: []
@@ -13,12 +13,13 @@ relates: []
 ## TL;DR
 
 A plugin that works perfectly in a local `.claude/` dir can break **silently** the moment
-it ships through a marketplace and gets installed — no error, just a quiet miss. Three axes
-catch almost all of it: **paths, versions, triggers.** This is the *while-you-build*
-checklist — the part that never shows up when you test the plugin in the same directory you
-wrote it in.
+it ships through a marketplace and gets installed — no error, just a quiet miss. Three
+install axes catch most of it: **paths, versions, triggers.** A fourth gate catches the
+last-mile lie: **publish receipts** bound to the exact revision/worktree. This is the
+*while-you-build* checklist — the part that never shows up when you test the plugin in the
+same directory you wrote it in.
 
-Each axis follows the same shape: **why it breaks → the rule → the self-check.**
+Each check follows the same shape: **why it breaks → the rule → the self-check.**
 
 ## 1. Paths / portability — absolute paths die on another machine
 
@@ -81,11 +82,36 @@ Each axis follows the same shape: **why it breaks → the rule → the self-chec
   confirm auto-fire actually fires once on a representative prompt — don't assume the local
   pass carries over.
 
-## Why these three and not "just test more"
+## 4. Publish verification / receipts — the last edit makes old evidence stale
 
-The trap underneath all three is the same: **the thing you test is not the thing your users
-run.** You test code at an absolute path they won't have, at a version number they can't see,
-in a matching pool that doesn't contain the siblings install will drag in. Local testing
-isn't wrong — it's just testing the wrong artifact. The fix isn't "test harder," it's to make
-the test artifact equal the ship artifact wherever the two can diverge: portable paths, a
-version that moves when behavior does, and an auto-fire re-test under the installed bundle.
+- **Why it breaks:** the last change before a PR or publish is often "just docs," "just the
+  manifest," or "just the install import." That change can alter the package artifact,
+  command name, model routing, or loaded context after the build/smoke evidence was
+  collected. A green receipt from the previous worktree state no longer proves the current
+  publish candidate.
+- **Rule:** any final edit invalidates prior evidence for the artifact it touched. The last
+  receipts before publish must bind to the exact revision and worktree fingerprint being
+  shipped. Capture at least `git rev-parse HEAD`, a dirty-worktree summary, command, exit
+  status, and timestamp. If the worktree is dirty by design, name the changed files in the
+  receipt; don't pretend a commit hash alone identifies the artifact.
+- **Build/MCP self-check:** after the final edit, run the build and MCP smoke on the same
+  worktree. For sociableWiki-style plugins, smoke both English and Korean reads: `list_topics`
+  sees the new concept, `read_doc` returns the English canonical doc, and `read_doc` with
+  `lang: "ko"` returns the Korean mirror. The receipt should say which revision/worktree
+  produced those observations.
+- **Behavioral QA self-check:** drive the installed behavior through the surface a user will
+  touch. For an installer, that means a temporary target project: install once, verify the
+  import loads the managed file, install again for idempotency, and force a conflicting
+  managed file to confirm the prompt/failure semantics. Unit tests are helpful, but the QA
+  claim is the observed install behavior.
+
+## Why these checks and not "just test more"
+
+The trap underneath all four checks is the same: **the thing you test is not the thing your
+users run.** You test code at an absolute path they won't have, at a version number they
+can't see, in a matching pool that doesn't contain the siblings install will drag in, or at
+a worktree revision that is no longer the publish candidate. Local testing isn't wrong —
+it's just testing the wrong artifact. The fix isn't "test harder," it's to make the test
+artifact equal the ship artifact wherever the two can diverge: portable paths, a version
+that moves when behavior does, an auto-fire re-test under the installed bundle, and final
+receipts tied to the exact revision/worktree being shipped.

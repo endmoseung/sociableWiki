@@ -64,6 +64,26 @@ harnesses get over-built before they do anything useful.
 5. **Would that procedure flood main context with throwaway output (search,
    logs, file dumps)?** → Subagent, or a Skill with `context: fork`.
 
+## Execution surface is a separate routing axis
+
+After you pick the primitive, route the **execution surface** separately. The primitive
+answers "where does this behavior live?" The surface answers "where should this run this
+time?"
+
+| Behavior shape | Default primitive | Low difficulty surface | High difficulty surface |
+|----------------|-------------------|------------------------|-------------------------|
+| Static policy or project fact | `CLAUDE.md` | Main context | Main context, but trim aggressively before it becomes a fixed tax |
+| Repeatable human-triggered workflow | Skill | Main context | Skill with `context: fork` if logs/search would pollute the main thread |
+| Heavy investigation or review | Subagent | Background subagent on cheap model | Isolated subagent/worktree with explicit files, schema, and budget |
+| Guaranteed lifecycle reaction | Hook | Shell hook | Hook plus deterministic receipt; do not rely on model memory |
+| External system access | MCP | Existing CLI wrapped by a skill when one-shot | MCP server only when typed, repeated, live tool access is worth the server |
+
+Do not encode difficulty as a new primitive. "Easy reviewer" and "hard reviewer" are the
+same behavior with different model/effort routing. In Claude custom agents, `model` belongs
+in the agent definition when the role truly needs a ceiling; `effort` belongs to the CLI,
+background runner, or per-attempt invocation. Avoid "effort custom-agent frontmatter" as a
+design pattern — it turns a runtime budget decision into permanent surface area.
+
 ## Key skill frontmatter (how the same file changes behavior)
 
 | Field | Effect |

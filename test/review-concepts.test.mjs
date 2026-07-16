@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 const concepts = [
   "dependency-clustered-code-review",
   "independent-verification-of-review-findings",
+  "meeting-decisions-are-deltas-not-transcripts",
 ];
 
 const index = await readFile("knowledge/index.md", "utf8");

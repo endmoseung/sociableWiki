@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "tsc -p mcp",
+    "test": "node test/review-concepts.test.mjs",
     "prepare": "npm run build",
     "start": "node mcp/dist/index.js"
   },

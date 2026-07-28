@@ -1,6 +1,6 @@
 # Topics
 
-Every doc is one **concept** — a single sharp claim or decision rule. The concept id is the path you pass to `read_doc` (e.g. `ai-native/fan-out-scope-gate`).
+Every doc is one **concept** — a single sharp claim or decision rule. The concept id is the path you pass to `read_doc` (e.g. `dev-process/planner-generator-evaluator-loop`).
 
 ## ai-native
 
@@ -28,3 +28,19 @@ Working with coding agents, harness design, subagent orchestration, LLM evaluati
 - **[The fan-out scope gate — freeze a filter into a manifest before spawning a batch](ai-native/fan-out-scope-gate.md)** — Before spawning N workers, resolve the filter to an exact list, get the human to confirm it, and freeze it into a claim manifest — workers never see a live filter.
 - **[The Harness Is the Eval Unit](ai-native/harness-is-the-eval-unit.md)** — When you evaluate an LLM agent, the scaffold shifts benchmark scores as much as the model does — so hold the harness constant, and calibrate any LLM-as-judge with a cross-family model before trusting it.
 - **[The Tool Receipt Pattern and Why Rubric Quality Is the Eval Bottleneck](ai-native/agent-eval-tool-receipt-pattern.md)** — In agent evaluation, the limiting factor is rubric design, not judge model strength — and the sharpest hallucination catcher is verifying that claimed tool calls actually ran.
+
+## dev-process
+
+How I actually run development with AI agents — the process rules and loops that keep work honest.
+
+- **[\"Done\" means you ran the check and pasted the output](dev-process/completion-means-verification-output.md)** — You may only claim a task is complete after running its verification command and citing the actual output — no output, no done.
+- **[Anti-confirmation-bias protocol: default to skeptic when the agent is your technical advisor](dev-process/anti-confirmation-bias-protocol.md)** — A set of mechanical rules that stop an AI agent — or any yes-man reviewer — from agreeing its way into a bad decision.
+- **[Search before patching — an anti-pattern is a class, not the one instance in front of you](dev-process/search-before-patching-a-pattern.md)** — When you spot (or get told about) an anti-pattern, grep the whole codebase for the same shape and agree on scope before fixing — patching only the visible instance leaves the same bug scattered and turns the reviewer into your linter.
+- **[The Planner → Generator → Evaluator Loop](dev-process/planner-generator-evaluator-loop.md)** — Every task, even a one-liner, runs through three separated phases — plan, build, judge — and the agent that writes the code is never the one that signs it off.
+- **[Trace the Cause Before You Fix — and Stop After the Same Error Twice](dev-process/trace-cause-before-fixing.md)** — When an error hits, don't wrap the failing line; trace the bad value at least two hops back up the call path and name each with file:line, then decide where to fix.
+
+## principles
+
+Durable judgment calls and design principles.
+
+- **[Five core software principles, re-derived for when an agent writes the code](principles/five-core-software-principles.md)** — Boundary owns the mess, illegal states unrepresentable, optimize for deletion, intent over implementation, and setup-cost-yes-per-task-cost-no — with the meta-shift that reshapes all five when an AI agent is the primary author.

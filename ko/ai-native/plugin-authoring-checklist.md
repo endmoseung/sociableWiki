@@ -1,8 +1,8 @@
 ---
 type: reference
-title: "Claude Code 플러그인 저작 체크리스트: 로컬 테스트가 놓치는 것들 (경로 · 버전 · 트리거)"
-description: 로컬 .claude/ 폴더에서 잘 돌던 플러그인이 배포·설치되는 순간 조용히 깨질 수 있다. 경로·버전·트리거 세 축이 그 대부분을 잡아낸다.
-tags: [claude-code, plugins, packaging, distribution, checklist]
+title: "Claude Code 플러그인 저작 체크리스트: 로컬 테스트가 놓치는 것들 (경로 · 버전 · 트리거 · publish receipt)"
+description: 로컬 .claude/ 폴더에서 잘 돌던 플러그인이 배포·설치되는 순간 조용히 깨질 수 있다. 경로·버전·트리거와 revision-bound publish receipt가 그 대부분을 잡아낸다.
+tags: [claude-code, plugins, packaging, distribution, checklist, verification]
 date: 2026-06-24
 source: original
 relates: []
@@ -13,11 +13,12 @@ relates: []
 ## 한 줄 요약
 
 로컬 `.claude/` 폴더에서 완벽하게 돌던 플러그인이, 마켓플레이스로 배포돼 설치되는 순간
-**조용히** 깨질 수 있습니다. 에러 하나 없이 그냥 안 걸립니다. 이걸 거의 다 잡아내는 축이
-세 개 있습니다. **경로, 버전, 트리거.** 이건 *만드는 동안* 보는 체크리스트입니다. 플러그인을
-작성한 바로 그 폴더에서 테스트할 때는 절대 드러나지 않는 부분이죠.
+**조용히** 깨질 수 있습니다. 에러 하나 없이 그냥 안 걸립니다. 설치 쪽 문제 대부분은 세 축이
+잡습니다. **경로, 버전, 트리거.** 마지막 순간의 거짓말은 네 번째 게이트가 잡습니다.
+정확한 revision/worktree에 묶인 **publish receipt**입니다. 이건 *만드는 동안* 보는
+체크리스트입니다. 플러그인을 작성한 바로 그 폴더에서 테스트할 때는 절대 드러나지 않는 부분이죠.
 
-세 축 모두 같은 모양입니다. **왜 깨지나 → 규칙 → 셀프 체크.**
+각 체크는 같은 모양입니다. **왜 깨지나 → 규칙 → 셀프 체크.**
 
 ## 1. 경로 / 이식성 — 절대 경로는 다른 머신에서 죽는다
 
@@ -77,11 +78,32 @@ relates: []
   `/plugin-name:name` 이나 명시적 alias로 바뀌어야 합니다). 설치 후에는 대표 프롬프트 하나로
   auto-fire가 실제로 한 번 걸리는지 확인하세요. 로컬 통과가 그대로 이어질 거라 가정하지 마세요.
 
-## 왜 하필 이 세 개인가, "그냥 더 테스트해"가 아니라
+## 4. Publish verification / receipt — 마지막 수정은 이전 증거를 stale하게 만든다
 
-세 축 아래 깔린 함정은 다 같습니다. **내가 테스트하는 것이 사용자가 실행하는 것과 다르다.**
+- **왜 깨지나:** PR이나 publish 직전의 마지막 변경은 흔히 "문서만", "manifest만", "install import만"
+  입니다. 하지만 그 변경은 build/smoke 증거를 모은 뒤 package artifact, command name, model routing,
+  loaded context를 바꿀 수 있습니다. 이전 worktree 상태에서 나온 green receipt는 현재 publish 후보를
+  더 이상 증명하지 않습니다.
+- **규칙:** 마지막 수정은 그 산출물에 대한 이전 증거를 무효화합니다. publish 직전 마지막 receipt는
+  실제로 ship할 revision과 worktree fingerprint에 묶여야 합니다. 최소한 `git rev-parse HEAD`,
+  dirty worktree 요약, command, exit status, timestamp를 남기세요. 의도적으로 dirty worktree를
+  ship 후보로 다룬다면 receipt에 변경 파일을 적어야 합니다. commit hash만으로 산출물을 식별했다고
+  말하면 안 됩니다.
+- **Build/MCP 셀프 체크:** 마지막 수정 뒤 같은 worktree에서 build와 MCP smoke를 다시 돌립니다.
+  sociableWiki 같은 플러그인은 영어와 한국어 read를 둘 다 smoke하세요. `list_topics`가 새 concept를
+  보고, `read_doc`이 영어 정본을 돌려주고, `lang: "ko"`를 준 `read_doc`이 한국어 mirror를 돌려줘야
+  합니다. receipt에는 그 관측이 어느 revision/worktree에서 나왔는지 적습니다.
+- **Behavioral QA 셀프 체크:** 사용자가 만질 surface로 설치 동작을 실제로 몰아보세요. installer라면
+  임시 대상 프로젝트가 필요합니다. 한 번 설치해 managed file import를 확인하고, 다시 설치해
+  idempotency를 확인하고, 충돌하는 managed file을 만들어 prompt/failure semantics를 확인합니다.
+  unit test는 도움이 되지만, QA 주장은 관측한 설치 행동이어야 합니다.
+
+## 왜 하필 이 체크들인가, "그냥 더 테스트해"가 아니라
+
+네 체크 아래 깔린 함정은 다 같습니다. **내가 테스트하는 것이 사용자가 실행하는 것과 다르다.**
 사용자에게는 없을 절대 경로에서, 사용자는 볼 수 없는 버전 번호로, 설치가 끌고 들어올 형제들이
-빠진 매칭 풀에서 테스트하는 거죠. 로컬 테스트가 틀린 게 아닙니다. 그냥 엉뚱한 산출물을
-테스트하고 있는 겁니다. 해법은 "더 열심히 테스트해"가 아니라, 둘이 갈라질 수 있는 지점마다
-테스트 산출물을 배포 산출물과 같게 만드는 것입니다. 이식 가능한 경로, 동작이 바뀔 때 함께
-움직이는 버전, 그리고 설치된 번들 아래서 다시 돌리는 auto-fire 재테스트.
+빠진 매칭 풀에서, 또는 더 이상 publish 후보가 아닌 worktree revision에서 테스트하는 거죠. 로컬
+테스트가 틀린 게 아닙니다. 그냥 엉뚱한 산출물을 테스트하고 있는 겁니다. 해법은 "더 열심히
+테스트해"가 아니라, 둘이 갈라질 수 있는 지점마다 테스트 산출물을 배포 산출물과 같게 만드는
+것입니다. 이식 가능한 경로, 동작이 바뀔 때 함께 움직이는 버전, 설치된 번들 아래서 다시 돌리는
+auto-fire 재테스트, 그리고 실제로 ship할 revision/worktree에 묶인 final receipt입니다.

@@ -80,7 +80,25 @@ A routed daily model (illustrative): 1,800 Haiku + 1,050 Sonnet + 150 Opus reque
 Real-world Claude Code use averages ~**$13/dev/active-day** ($150–250/mo); good habits
 keep it $5–15/day, bad habits push the *same work* to $20–40/day.
 
----
+## Role × difficulty × execution-surface routing
+
+Cost routing is not just "which model?" It is **role × difficulty × execution surface**:
+what job the agent is doing, how hard this instance is, and where the work actually runs.
+
+| Role | Low difficulty | Medium difficulty | High difficulty | Execution surface |
+|------|----------------|-------------------|-----------------|-------------------|
+| **Explorer / librarian** | Haiku, low effort | Sonnet, low/medium | Sonnet, medium | Background subagent or read-only CLI so search/log noise stays out of main context |
+| **Executor** | Haiku for single-file mechanical edits | Sonnet, medium | Opus only after evidence Sonnet is failing | Main CLI when it edits; isolated worktree only for parallel mutation |
+| **Reviewer / verifier** | Haiku for checklist/static checks | Sonnet for behavioral review | Opus adviser for ambiguous architecture/security | Separate review pass with receipts, not the same context that authored the change |
+| **Orchestrator** | Sonnet, low | Sonnet, medium | Opus adviser + Sonnet hands-on | Main conversation; keep it lean because every turn re-sends it |
+| **Automation / CI loop** | Haiku or deterministic script | Sonnet only for synthesis | Avoid open-ended Opus loops | Headless/background invocation with hard token, time, and retry caps |
+
+The Claude-specific boundary: a custom agent can set its **model** because model choice is
+part of that agent's role and tool surface. **Effort is not a custom-agent identity.**
+Treat effort/thinking budget as an invocation-level control: CLI flags, background-run
+configuration, or an explicit per-task instruction when the surface supports it. Do not
+create separate "high-effort reviewer" custom agents just to force thinking depth; that
+multiplies routing objects without changing the underlying role.
 
 ## The subagent spend calculus
 

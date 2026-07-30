@@ -75,7 +75,24 @@ subagent는 공짜가 아닙니다. 깨끗한 context를 얻는 대신 토큰을
 **개발자당 활동일 하루 ~$13**($150~250/월)입니다. 습관이 좋으면 하루 $5~15, 나쁘면 *같은 작업*을
 하루 $20~40까지 밀어 올립니다.
 
----
+## 역할 × 난이도 × 실행 surface 라우팅
+
+비용 라우팅은 단순히 "어떤 모델?"이 아닙니다. **역할 × 난이도 × 실행 surface**입니다. 에이전트가
+무슨 일을 하는지, 이 인스턴스가 얼마나 어려운지, 그리고 실제 작업이 어디서 도는지를 함께 봐야 합니다.
+
+| 역할 | 낮은 난이도 | 중간 난이도 | 높은 난이도 | 실행 surface |
+|------|-------------|-------------|-------------|--------------|
+| **Explorer / librarian** | Haiku, low effort | Sonnet, low/medium | Sonnet, medium | 검색·로그 노이즈가 main context에 들어오지 않도록 read-only CLI나 background subagent |
+| **Executor** | 단일 파일 기계적 수정은 Haiku | Sonnet, medium | Sonnet 실패 근거가 있을 때만 Opus | 수정은 main CLI에서, 병렬 수정일 때만 격리 worktree |
+| **Reviewer / verifier** | 체크리스트·정적 점검은 Haiku | 행동 검토는 Sonnet | 모호한 아키텍처·보안은 Opus 조언자 | 작성한 context가 아니라 별도 review pass와 receipt |
+| **Orchestrator** | Sonnet, low | Sonnet, medium | Opus 조언자 + Sonnet 실작업 | main 대화. 매 턴 재전송되므로 가볍게 유지 |
+| **Automation / CI loop** | Haiku 또는 결정론적 스크립트 | 종합이 필요할 때만 Sonnet | 열린 Opus loop는 피함 | 토큰·시간·재시도 상한을 둔 headless/background 호출 |
+
+Claude에서의 경계는 이렇습니다. custom agent는 **model**을 정할 수 있습니다. 모델 선택은 그 agent의
+역할과 도구 surface에 속하기 때문입니다. 하지만 **effort는 custom-agent 정체성이 아닙니다.** effort나
+thinking 예산은 호출 단위 제어로 다루세요. CLI flag, background 실행 설정, 또는 surface가 지원하는
+경우 작업별 명시 지시가 맞습니다. 생각 깊이를 강제하려고 "high-effort reviewer" 같은 custom agent를
+따로 만들지 마세요. 역할은 그대로인데 라우팅 대상만 늘어납니다.
 
 ## subagent 비용 계산
 

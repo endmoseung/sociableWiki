@@ -45,6 +45,29 @@ The pattern:
 
 This catches fabricated results at the source, before they propagate downstream into later reasoning. It's cheap, deterministic, and it plugs a hole that no amount of output-quality scoring will find.
 
+## Attempt- and revision-bound evidence
+
+A receipt is not timeless. It proves one action on one attempt against one exact artifact.
+Every receipt should bind to:
+
+- `attempt_id` or retry number — a later retry does not inherit the first attempt's proof.
+- Tool or command name, arguments, exit status, started/ended time, and a short output digest.
+- Repository revision and worktree fingerprint — at minimum `git rev-parse HEAD` plus the
+  dirty-status summary or tree hash used for that run.
+- Artifact identity — file path plus hash or package/version when the tool touched a built output.
+
+The operational rule: **any final edit invalidates prior evidence for the artifact it
+changes.** If you edit docs after a build, the build receipt may still prove the code
+compiled, but it no longer proves the publish candidate. If you edit the MCP docs after a
+smoke test, rerun the MCP smoke. Keep receipts append-only by attempt; do not overwrite
+the failed attempt with the passing one.
+
+Tool receipts also do not prove user behavior. Add a **behavioral QA receipt** for any
+surface a human or agent will actually use: the scenario, inputs, live surface driven
+(CLI, MCP tool, browser, editor), observed output, and revision fingerprint. "The test
+passed" and "the install flow was actually run and loaded the imported file" are different
+claims, so they need different receipts.
+
 ## The 4-tier eval pyramid
 
 A layering that keeps cost sane while still catching the failures that matter:

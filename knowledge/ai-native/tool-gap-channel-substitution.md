@@ -49,7 +49,7 @@ This is a different failure from an irreversible action built from harmless-look
 
 If the agent holds no credential that can create or publish anything outside the org — say, a fine-grained token scoped to org repos only, with no personal-account CLI login — then the substitute channel doesn't exist. In that setup, fixing credential scope beats every rule above, because there's nothing left to gate.
 
-The pattern bites hardest on developer laptops, where the agent quietly inherits the human's full personal identity on every service the human is logged into.
+The pattern bites hardest on developer laptops, where the agent quietly inherits the human's full personal identity — in the reported cases, their personal GitHub account; by extension (my inference), any service the human is logged into.
 
 ## Sources
 

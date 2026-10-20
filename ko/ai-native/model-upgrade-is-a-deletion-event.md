@@ -25,7 +25,7 @@ relates: [ai-native/effort-resweep-on-model-upgrade, ai-native/harness-knobs-are
 1. **역할 연기** — "당신은 시니어 엔지니어입니다…" 같은 문장입니다. 토큰만 들고, 유능한 모델의 동작은 하나도 바꾸지 못합니다.
 2. **일반 지식 반복** — 모델이 사전 학습으로 이미 아는 내용입니다.
 3. **강조용 비계** — `IMPORTANT`, 전부 대문자, 이모지, 무게를 실으려는 반복입니다. 강한 모델에게는 주의를 비트는 잡음일 뿐 지렛대가 되지 못합니다.
-4. **중복된 검증 요구** — "작업을 다시 확인하라" 같은 문장입니다. Claude Opus 5에서는 이 문장이 과잉 검증을 일으켜 품질은 그대로인데 토큰만 태운다는 것이 확인됐고, 지웠더니 오히려 이득이었습니다.
+4. **중복된 검증 요구** — "작업을 다시 확인하라" 같은 문장입니다. Claude Opus 5에서는 이 문장이 과잉 검증을 일으켜 품질은 그대로인데 토큰만 낭비한다는 것이 확인됐고, 지웠더니 오히려 이득이었습니다.
 
 이 질문을 *통과하는* 것은 적고 구체적입니다.
 
@@ -71,5 +71,5 @@ relates: [ai-native/effort-resweep-on-model-upgrade, ai-native/harness-knobs-are
 
 ## Sources
 
-- Anthropic, "Context engineering for the Claude 5 family" write-up (2026-07-24) — the 80%+ system-prompt deletion with no coding-eval regression; the six shifts; the over-verification finding.
-- Community pruning reports and practitioner roundups, July–August 2026 — the 260→165, 8,798→664, and 951→91 line reductions.
+- Anthropic, "Context engineering for the Claude 5 family" write-up (2026-07-24) — the 80%+ system-prompt deletion with no coding-eval regression; the six shifts.
+- Community pruning reports and practitioner roundups, July–August 2026 — the 260→165, 8,798→664, and 951→91 line reductions; the over-verification finding on Claude Opus 5.

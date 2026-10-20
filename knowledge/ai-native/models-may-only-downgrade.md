@@ -40,7 +40,7 @@ Treat verdicts as an ordered scale — `fail < inconclusive < pass`, `deny < ask
 
 1. **Deterministic rules run first and own the hard verdicts.** Anything mechanically decidable — path, command, exit code, count, schema — is settled without asking the model.
 2. **The model may only lower or annotate.** It can pull a pass down, add suspicion, escalate to a human, or propose a check. It cannot raise a fail or reverse a deny.
-3. **A model's "yes" becomes a PASS only through execution.** If the model wants to assert a positive, it writes a check; the harness runs it; the exit code is the evidence.
+3. **A model's "yes" is a proposal, not a PASS.** If the model wants to assert a positive, it writes a check for the harness to run. The result is recorded as model-sourced evidence; it can support a verdict the deterministic layer already reached, but it never creates a PASS that layer withheld.
 4. **An unavailable model is not a pass.** Timeouts, provider errors, and exhausted budgets are recorded as their own outcome, under an explicit fail mode.
 5. **Policy layers intersect.** Shared, child, or reviewed configurations may add `deny` or `ask`; they may not add `allow`. A child's reach is the parent's reach intersected with its own rules.
 

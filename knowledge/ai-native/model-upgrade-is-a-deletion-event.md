@@ -71,5 +71,5 @@ Expect to remove on the order of half of a mature instructions file, and much mo
 
 ## Sources
 
-- Anthropic, "Context engineering for the Claude 5 family" write-up (2026-07-24) — the 80%+ system-prompt deletion with no coding-eval regression; the six shifts; the over-verification finding.
-- Community pruning reports and practitioner roundups, July–August 2026 — the 260→165, 8,798→664, and 951→91 line reductions.
+- Anthropic, "Context engineering for the Claude 5 family" write-up (2026-07-24) — the 80%+ system-prompt deletion with no coding-eval regression; the six shifts.
+- Community pruning reports and practitioner roundups, July–August 2026 — the 260→165, 8,798→664, and 951→91 line reductions; the over-verification finding on Claude Opus 5.

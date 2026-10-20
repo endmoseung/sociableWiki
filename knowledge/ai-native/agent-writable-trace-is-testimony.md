@@ -104,7 +104,7 @@ The eval-sandbox attack is about an agent corrupting the grader's toolchain thro
 ## When this is wrong
 
 - **No downstream reader.** A throwaway local session with no judge, no audit and no automated consumer of the transcript gets nothing from an extra sink. The rule starts paying the moment a decision is made from the record.
-- **"Out of reach" is relative to a threat model.** ai-sdlc-harness keeps its HMAC key in the workspace; its own docs say it targets a drifting agent, not a deliberate adversary that reads the key and recomputes the chain. Verdict calls its write-blocking hooks heuristic guardrails, not a sandbox. Be explicit about which adversary your pen placement actually stops.
+- **"Out of reach" is relative to a threat model.** ai-sdlc-harness keeps its HMAC key in the workspace; by its stated threat model it targets a drifting agent, not a deliberate adversary that reads the key and recomputes the chain. Verdict calls its write-blocking hooks heuristic guardrails, not a sandbox. Be explicit about which adversary your pen placement actually stops.
 - **[hypothesis]** A same-user append-only file flag is weaker than it looks: on macOS the owner can clear user flags, so an agent running as that user can too, and Linux's equivalent needs root to set. Only a system-level flag, a different user or an off-host sink moves the record out of reach.
 - **Sealing has a recovery cost.** If every authority file is sealed, something will eventually need resealing. Make that a logged human action, not an automatic repair — otherwise the reseal path becomes the new pen the agent can hold.
 

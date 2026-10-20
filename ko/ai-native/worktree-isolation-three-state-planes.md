@@ -1,7 +1,7 @@
 ---
 type: reference
 title: "worktree 격리는 하네스 상태를 세 갈래로 나눕니다"
-description: "git worktree가 막아 주는 것은 추적 파일 수정이지 세션 전체가 아닙니다. Claude Code에서 권한 승인과 메모리는 울타리를 넘고, gitignore된 개인 지침은 울타리 밖에 남으며, hook 경로는 처음 실행한 위치에 묶여 있습니다."
+description: "git worktree가 막아 주는 것은 추적 파일 수정이지 세션 전체가 아닙니다. Claude Code에서 권한 승인과 메모리는 울타리를 넘고, gitignore된 개인 지침은 새 worktree로 따라오지 않으며, hook 경로는 처음 실행한 위치에 묶여 있습니다."
 tags: [worktrees, parallel-agents, permissions, agent-memory, claude-code]
 date: 2026-10-11
 source: "External-derived — Claude Code worktree and memory docs, Anthropic power-user tips; see Sources."

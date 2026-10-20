@@ -51,7 +51,7 @@ The part that's easy to miss: proofs don't fail loudly when they go stale. They 
 
 ## When the rule is wrong
 
-- **Exact-tree binding can be too strict for slow suites.** Invalidating a 40-minute suite because a comment changed is waste. Relevant-path freshness is the usual relaxation, but it's only as good as the path declarations; if they miss a dependency, a stale proof reads as fresh. Treat it as a weaker state than an exact match.
+- **Exact-tree binding can be too strict for slow suites.** Invalidating a 30-minute suite because a comment changed is waste. Relevant-path freshness is the usual relaxation, but it's only as good as the path declarations; if they miss a dependency, a stale proof reads as fresh. Treat it as a weaker state than an exact match.
 - **For cheap checks, just rerun.** Freshness bookkeeping is overhead. When a check costs seconds, rerunning it at every boundary is simpler than proving its old result still applies.
 - **Identity is not correctness.** A perfectly fresh, exactly bound proof is only as good as the check behind it — which still has to be one that could have failed. Binding answers "is this about the current thing?", not "is the current thing right?"
 - **Non-hermetic checks can't be fully bound.** Anything that touches the network, the clock, or a live service has inputs no digest captures. Record those as environment-dependent instead of pretending the hash covers them.

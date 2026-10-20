@@ -58,7 +58,7 @@ skill, MCP 서버, tool, agent를 installed → advertised → loaded → invoke
 
 ### Everruns — 이 호스트가 못 돌리는 건 광고하지 않는다
 
-capability ID는 저장된 설정에 그대로 남아 있을 수 있습니다. 하지만 현재 호스트가 그걸 실행할 수 없으면 런타임은 프롬프트 문구도, tool도, 동작도 추가하지 않습니다. 실패하면 닫히는 방식의 광고입니다. 모델은 자기가 갖지 않은 능력을 가졌다는 말을 듣지 않습니다. 실행 전 점검도 실제 실행과 같은 조립 경로를 쓰므로, 미리 보기와 실제 실행이 어긋날 수 없습니다.
+capability ID는 저장된 설정에 그대로 남아 있을 수 있습니다. 하지만 현재 호스트가 그걸 실행할 수 없으면 런타임은 프롬프트 문구도, tool도, 동작도 추가하지 않습니다. 실행할 수 없으면 아예 내세우지 않는 방식입니다. 모델은 자기가 갖지 않은 능력을 가졌다는 말을 듣지 않습니다. 실행 전 점검도 실제 실행과 같은 조립 경로를 쓰므로, 미리 보기와 실제 실행이 어긋날 수 없습니다.
 
 ### HarnessDesk — 선언한 것과 시연한 것
 
@@ -74,7 +74,7 @@ registry 하나가 agent 어댑터마다 플래그, 최소 버전, 알려진 공
 
 ### Belay — 볼 수 없다고 인정하는 정책 이름
 
-파일 단위 preset(생성 금지, 삭제 금지, 테스트 읽기 전용)은 실제로 관찰한 파일 시스템 변화에 근거합니다. 반면 네트워크 egress preset은 이름은 있지만 항상 `UNVERIFIED`를 돌려줍니다. harness가 나가는 바이트를 관찰하지 못하기 때문입니다. 운영자가 설정으로 근거가 있다고 선언하는 것도 막습니다. 모르는 preset은 실패로 닫힙니다. 검증할 수 있는 턴이 거의 없으면 깨끗한 0%가 아니라 계측 장치가 의심스럽다고 보고합니다.
+파일 단위 preset(생성 금지, 삭제 금지, 테스트 읽기 전용)은 실제로 관찰한 파일 시스템 변화에 근거합니다. 반면 네트워크 egress preset은 이름은 있지만 항상 `UNVERIFIED`를 돌려줍니다. harness가 나가는 바이트를 관찰하지 못하기 때문입니다. 운영자가 설정으로 근거가 있다고 선언하는 것도 막습니다. 모르는 preset은 막는 쪽으로 처리합니다. 검증할 수 있는 턴이 거의 없으면 깨끗한 0%가 아니라 계측 장치가 의심스럽다고 보고합니다.
 
 ## 이렇게 하면 주장이 어떻게 바뀌나
 
@@ -94,6 +94,6 @@ registry 하나가 agent 어댑터마다 플래그, 최소 버전, 알려진 공
 - [benedictdavon/eclipse-harness](https://github.com/benedictdavon/eclipse-harness) — 요청·설정·실제 모델 경로와 원하는·실제·강제 권한을 나누는 방식을 참고했습니다.
 - [everruns/everruns](https://github.com/everruns/everruns) — 호스트가 못 돌리는 capability를 광고하지 않는 방식을 참고했습니다.
 - [HarnessDesk/HarnessDesk](https://github.com/HarnessDesk/HarnessDesk) — 선언한 capability와 시연한 주장을 따로 기록하는 ledger를 참고했습니다.
-- [kannandreams/tuff](https://github.com/kannandreams/tuff) — full / partial / unsupported 강제 행렬, 실패하면 닫히는 설치, lockfile에 남는 공백을 참고했습니다.
+- [kannandreams/tuff](https://github.com/kannandreams/tuff) — full / partial / unsupported 강제 행렬, 호스트가 규칙을 강제할 수 없으면 설치를 거절하는 방식, lockfile에 남는 공백을 참고했습니다.
 - [Aero123421/SimpleFlowHarness](https://github.com/Aero123421/SimpleFlowHarness) — 어댑터별 Enforced·BestEffort 접근 표시를 참고했습니다.
 - [haqaliz/belay](https://github.com/haqaliz/belay) — 근거가 있는 preset과 항상 UNVERIFIED인 preset을 나누는 방식을 참고했습니다.

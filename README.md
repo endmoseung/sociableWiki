@@ -78,7 +78,7 @@ node mcp/dist/index.js   # speaks MCP over stdio
 ## Make it your own
 
 This repo isn't just my notes — it's a **template you can run as your own
-agent-searchable wiki**. My 22 docs are the worked example; the structure, the skills,
+agent-searchable wiki**. My 61 docs are the worked example; the structure, the skills,
 and the MCP server are yours to take.
 
 ```bash
